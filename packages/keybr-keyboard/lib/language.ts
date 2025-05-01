@@ -159,6 +159,13 @@ export class Language implements EnumItem {
     /* alphabet= */ "абвгґдеєжзиіїйклмнопрстуфхцчшщьюя",
   );
 
+  static readonly KN = new Language(
+    /* id= */ "kn",
+    /* script= */ "kannada",
+    /* direction= */ "ltr",
+    /* alphabet= */ "ಅಆಇಈಉಊಋೠಎಏಐಒಓಔಂಃಕಖಗಘಙಚಛಜಝಞಟಠಡಢಣತಥದಧನಪಫಬಭಮಯರಱಲವಶಷಸಹಳೞ",
+  );
+
   static readonly ALL = new Enum<Language>(
     Language.AR,
     Language.BE,
@@ -186,6 +193,7 @@ export class Language implements EnumItem {
     Language.TH,
     Language.TR,
     Language.UK,
+    Language.KN,
   );
 
   /** ISO 639-1 language code, https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes */
@@ -197,7 +205,8 @@ export class Language implements EnumItem {
     | "greek"
     | "hebrew"
     | "latin"
-    | "thai";
+    | "thai"
+    | "kannada";
   /** The direction of the writing system, either "ltr" for left-to-right, or "rtl" for right-to-left. */
   readonly direction: "ltr" | "rtl";
   /** The list of alphabet code points. */
@@ -217,7 +226,14 @@ export class Language implements EnumItem {
 
   private constructor(
     id: string,
-    script: "arabic" | "cyrillic" | "greek" | "hebrew" | "latin" | "thai",
+    script:
+      | "arabic"
+      | "cyrillic"
+      | "greek"
+      | "hebrew"
+      | "latin"
+      | "thai"
+      | "kannada",
     direction: "ltr" | "rtl",
     alphabet: string,
   ) {
@@ -320,6 +336,8 @@ export class Language implements EnumItem {
         );
       case "thai":
         return codePoint >= 0x0e00 && codePoint <= 0x0e7f;
+      case "kannada":
+        return codePoint >= 0x0c80 && codePoint <= 0x0cff;
       default:
         return false;
     }
@@ -346,6 +364,8 @@ export function getExampleText({ script }: Language): string {
       return "תאכל יותר תפוחים ותפוזים.";
     case "thai":
       return "กินส้มกับแอปเปิลเยอะ ๆ";
+    case "kannada":
+      return "ಹೆಚ್ಚು ಸೇಬು ಮತ್ತು ಕಿತ್ತಳೆ ತಿನ್ನಿ.";
     default:
       return "Eat more apples and oranges.";
   }
@@ -365,5 +385,7 @@ export function getExampleLetters({ script }: Language): CodePoint[] {
       return [0x0061, 0x0062, 0x0063, 0x0064, 0x0065, 0x0066];
     case "thai":
       return [0x0e01, 0x0e02, 0x0e04, 0x0e06, 0x0e07, 0x0e08];
+    case "kannada":
+      return [0x0c95, 0x0ca8, 0x0cac, 0x0ca6, 0x0cbe, 0x0cb0]; // ಕ ನ ಬ ದ ಾ ರ
   }
 }
