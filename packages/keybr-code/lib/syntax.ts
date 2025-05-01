@@ -12,6 +12,7 @@ import {
   grammar_html_css,
   grammar_java,
   grammar_javascript,
+  grammar_latex,
   grammar_python,
   grammar_regex,
   grammar_rust,
@@ -55,6 +56,8 @@ export class Syntax implements EnumItem {
 
   static readonly GO = new Syntax("go", "Go", grammar_go);
 
+  static readonly LATEX = new Syntax("latex", "LaTeX", grammar_latex);
+
   static readonly ALL = new Enum<Syntax>(
     Syntax.HTML,
     Syntax.CSS,
@@ -69,6 +72,7 @@ export class Syntax implements EnumItem {
     Syntax.REGEX,
     Syntax.JAVA,
     Syntax.GO,
+    Syntax.LATEX,
   );
 
   readonly id: string;
