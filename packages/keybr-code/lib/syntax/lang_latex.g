@@ -1,4 +1,3 @@
-
 start -> latex_document;
 
 latex_document ->
@@ -16,13 +15,13 @@ preamble ->
   | preamble _ preamble_command
   ;
 
-documentclass_declaration -> cmd_documentclass _ documentclass_options _ "{" _ document_class _ "}";
+documentclass_declaration -> cmd_documentclass _ documentclass_options? _ "{" _ document_class _ "}";
 
-documentclass_options -> "[" _ option_list _ "]" | "";
+documentclass_options -> "[" _ option_list _ "]";
 
-option_list -> option [_ "," _ option];
+option_list -> option (_ "," _ option)*;
 
-option -> 
+option ->
     "10pt"
   | "11pt"
   | "12pt"
@@ -44,9 +43,9 @@ document_class ->
   | "slides"
   ;
 
-package_import -> cmd_usepackage _ package_options _ "{" _ package_name _ "}";
+package_import -> cmd_usepackage _ package_options? _ "{" _ package_name _ "}";
 
-package_options -> "[" _ option_list _ "]" | "";
+package_options -> "[" _ option_list _ "]";
 
 package_name ->
     "amsmath"
@@ -82,7 +81,7 @@ setlength_command -> cmd_setlength _ "{" _ length_parameter _ "}" _ "{" _ length
 
 package_configuration -> cmd_hypersetup _ "{" _ key_value_list _ "}";
 
-key_value_list -> key_value_pair [_ "," _ key_value_pair];
+key_value_list -> key_value_pair (_ "," _ key_value_pair)*;
 key_value_pair -> key _ "=" _ value;
 
 body -> begin_document _ content _ end_document;
@@ -97,13 +96,13 @@ content ->
   | content _ content
   ;
 
-text_content -> "*"; 
+text_content -> [^\\]+;
 
 latex_environment ->
     begin_environment _ environment_content _ end_environment
   ;
 
-begin_environment -> cmd_begin _ "{" _ environment_name _ "}" [_ environment_options];
+begin_environment -> cmd_begin _ "{" _ environment_name _ "}" environment_options?;
 end_environment -> cmd_end _ "{" _ environment_name _ "}";
 
 environment_options -> "[" _ option_list _ "]";
@@ -127,7 +126,8 @@ environment_name ->
   | "tikzpicture"
   ;
 
-environment_content -> "*"; 
+environment_content -> [^\\]+;
+
 latex_command ->
     section_command
   | formatting_command
@@ -184,7 +184,7 @@ inline_math -> "$" _ math_expression _ "$";
 display_math -> "$$" _ math_expression _ "$$" | cmd_displaystyle _ "{" _ math_expression _ "}";
 equation_environment -> cmd_begin _ "{" _ "equation" _ "}" _ math_expression _ cmd_end _ "{" _ "equation" _ "}";
 
-math_expression -> "*"; 
+math_expression -> [^$]+;
 
 math_function ->
     cmd_frac _ "{" _ math_expression _ "}" _ "{" _ math_expression _ "}"
@@ -208,14 +208,13 @@ special_command ->
   | cmd_clearpage
   ;
 
-image_options -> image_option [_ "," _ image_option];
+image_options -> image_option (_ "," _ image_option)*;
 image_option ->
     "width" _ "=" _ length_value
   | "height" _ "=" _ length_value
   | "scale" _ "=" _ scale_factor
   | "angle" _ "=" _ rotation_angle
   ;
-
 
 cmd_documentclass -> "\\documentclass";
 cmd_usepackage -> "\\usepackage";
@@ -270,26 +269,26 @@ cmd_sum -> "\\sum";
 cmd_prod -> "\\prod";
 cmd_displaystyle -> "\\displaystyle";
 
+title_text -> [^}]+;
+author_text -> [^}]+;
+date_text -> [^}]*;
+section_title -> [^}]+;
+command_name -> "\\" [a-zA-Z]+;
+command_definition -> [^}]+;
+begin_definition -> [^}]+;
+end_definition -> [^}]+;
+length_parameter -> [a-zA-Z]+;
+length_value -> [0-9.]+ ( "cm" | "mm" | "in" | "pt" );
+key -> [a-zA-Z]+;
+value -> [^,}]+;
+label_name -> [^}]+;
+citation_key -> [^}]+;
+bib_file -> [^}]+;
+bib_style -> [^}]+;
+file_path -> [^}]+;
+image_path -> [^}]+;
+scale_factor -> [0-9.]+;
+rotation_angle -> [0-9.]+;
+arg_count -> [1-9];
 
-title_text -> "*";
-author_text -> "*";
-date_text -> "*";
-section_title -> "*";
-command_name -> "\\*";
-command_definition -> "*";
-environment_name -> "*";
-begin_definition -> "*";
-end_definition -> "*";
-length_parameter -> "*";
-length_value -> "*";
-key -> "*";
-value -> "*";
-label_name -> "*";
-citation_key -> "*";
-bib_file -> "*";
-bib_style -> "*";
-file_path -> "*";
-image_path -> "*";
-scale_factor -> "*";
-rotation_angle -> "*";
-arg_count -> "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+_ -> [ \t\n\r]*;
